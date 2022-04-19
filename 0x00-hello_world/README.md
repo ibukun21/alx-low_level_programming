@@ -1,1 +1,1 @@
-readme file for 4-puts.c
+readme for 6-size.c
