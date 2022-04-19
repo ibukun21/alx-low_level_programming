@@ -1,1 +1,1 @@
-readme for 6-size.c
+readme file for 100-intel
