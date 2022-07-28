@@ -1,99 +1,143 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include "main.h"
 
 /**
- * is_digit - checks if a string contains a non-digit char
- * @s: string to be evaluated
+ * _prntstr - prints a string
  *
- * Return: 0 if a non-digit is found, 1 otherwise
+ * @s: string to print
  */
-int is_digit(char *s)
+void _prntstr(char *s)
 {
-int i = 0;
-
-while (s[i])
-{
-if (s[i] < '0' || s[i] > '9')
-return (0);
-i++;
-}
-return (1);
+	while (*s)
+		_putchar(*s++);
 }
 
 /**
- * _strlen - returns the length of a string
- * @s: string to evaluate
+ * numstrchk - checks arg array to see if the are numeric strings, converts
+ * from ascii to byte int, and returns their length. Segfault on null pointer.
  *
- * Return: the length of the string
+ * @s: string to check
+ *
+ * Return: Length of string. Exit 98 if not numeric.
  */
-int _strlen(char *s)
+long int numstrchk(char *s)
 {
-int i = 0;
+	long int len = 0;
 
-while (s[i] != '\0')
-{
-i++;
-}
-return (i);
+	if (*s == 0)
+	{
+		_prntstr("Error\n");
+		exit(98);
+	}
+
+	while (*s)
+	{
+		if (*s < '0' || *s > '9')
+		{
+			_prntstr("Error\n");
+			exit(98);
+		}
+		*s -= '0';
+		len++;
+		s++;
+	}
+	return (len);
 }
 
 /**
- * errors - handles errors for main
+ * _calloc_buffer - allocate a block of memory of size * num and init to '0'
+ *
+ * @num: number of elements to allocate
+ * @size: size of element
+ *
+ * Return: pointer to allocated space, exit 98 on failure
  */
-void errors(void)
+void *_calloc_buffer(long int num, long int size)
 {
-printf("Error\n");
-exit(98);
+	void *ret;
+	char *ptr;
+
+	ret = malloc(num * size);
+	if (ret == 0)
+	{
+		exit(98);
+	}
+
+	size = size * num;
+	ptr = ret;
+	ptr[--size] = 0;
+	while (size--)
+		ptr[size] = '0';
+
+	return (ret);
 }
 
 /**
- * main - multiplies two positive numbers
- * @argc: number of arguments
- * @argv: array of arguments
+ * trimzero - moves pointer position to after last leading 0 in a string,
+ * or last zero if all zeros
  *
- * Return: always 0 (Success)
+ * @s: char * we want to move
+ *
+ * Return: new position
  */
-int main(int argc, char *argv[])
+char *trimzero(char *s)
 {
-char *s1, *s2;
-int len1, len2, len, i, carry, digit1, digit2, *result, a = 0;
+	while (*s == '0')
+		if (*(s + 1) != 0)
+			s++;
+		else
+			break;
+	return (s);
+}
 
-s1 = argv[1], s2 = argv[2];
-if (argc != 3 || !is_digit(s1) || !is_digit(s2))
-errors();
-len1 = _strlen(s1);
-len2 = _strlen(s2);
-len = len1 + len2 + 1;
-result = malloc(sizeof(int) * len);
-if (!result)
-return (1);
-for (i = 0; i <= len1 + len2; i++)
-result[i] = 0;
-for (len1 = len1 - 1; len1 >= 0; len1--)
+/**
+ * main - multiply two  positive integer strings of arbitrary size
+ *
+ * @ac: number of arguments
+ * @av: arugments
+ *
+ * Return: 0 if successful, 98 if failure
+ */
+int main(int ac, char **av)
 {
-digit1 = s1[len1] - '0';
-carry = 0;
-for (len2 = _strlen(s2) - 1; len2 >= 0; len2--)
-{
-digit2 = s2[len2] - '0';
-carry += result[len1 + len2 + 1] + (digit1 * digit2);
-result[len1 + len2 + 1] = carry % 10;
-carry /= 10;
-}
-if (carry > 0)
-result[len1 + len2 + 1] += carry;
-}
-for (i = 0; i < len - 1; i++)
-{
-if (result[i])
-a = 1;
-if (a)
-_putchar(result[i] + '0');
-}
-if (!a)
-_putchar('0');
-_putchar('\n');
-free(result);
-return (0);
+	long int len1, len2, lenres, i, j;
+	char *res;
+
+	if (ac != 3)
+	{
+		_prntstr("Error\n");
+		return (98);
+	}
+	av[2] = trimzero(av[2]);
+	av[1] = trimzero(av[1]);
+	if (*av[1] == '0' || *av[2] == '0')
+	{
+		_prntstr("0\n");
+		return (0);
+	}
+	len1 = numstrchk(av[1]);
+	len2 = numstrchk(av[2]);
+	lenres = len1 + len2;
+	res = _calloc_buffer(lenres + 1, sizeof(char));
+
+	for (i = lenres - 1, len1--; len1 >= 0; len1--, i += len2 - 1)
+		for (j = len2 - 1; j >= 0; j--, i--)
+		{
+			res[i] = (av[1][len1] * av[2][j] % 10) + res[i];
+			res[i - 1] = (av[1][len1] * av[2][j] / 10) + res[i - 1];
+			if (res[i] > '9')
+			{
+				res[i] -= 10;
+			x	res[i - 1]++;
+			}
+		}
+
+	if (*res == '0')
+		_prntstr(res + 1);
+	else
+		_prntstr(res);
+	_putchar('\n');
+	free(res);
+
+	return (0);
 }
