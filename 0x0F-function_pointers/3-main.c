@@ -1,39 +1,39 @@
 #include "3-calc.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /**
- * main - Entry point
- * @argc: number of arguments
- * @argv: array of arguments
- * Return: 0 on success
+ * main - calculates two numbers given a string
+ *
+ * @ac: number of arguments
+ * @av: array of argument strings
+ *
+ * Return: 0 on success.
  */
-
-int main(int argc, char *argv[])
+int main(int ac, char *av[])
 {
-int num1, num2, res;
-char *op;
+	int a, b;
+	int (*f)(int, int);
 
-if (argc != 4)
-{
-printf("Error\n");
-exit(98);
+	if (ac != 4)
+	{
+		printf("Error\n");
+		return (98);
+	}
+	a = atoi(av[1]);
+	b = atoi(av[3]);
+	f = get_op_func(av[2]);
+	if (f == NULL || av[2][1] != 0)
+	{
+		printf("Error\n");
+		return (99);
+	}
+	if ((av[2][0] == '/' || av[2][0] == '%') && b == 0)
+	{
+		printf("Error\n");
+		return (100);
+	}
+
+	printf("%d\n", f(a, b));
+	return (0);
 }
-num1 = atoi(argv[1]);
-num2 = atoi(argv[3]);
-op = argv[2];
-
-if (get_op_func(op) == NULL || op[1] != '\0')
-{
-printf("Error\n");
-exit(99);
-}
-
-if ((num2 == 0 && op[0] == '/') || (num2 == 0 && op[0] == '%'))
-{
-printf("Error\n");
-exit(100);
-}
-res = (*get_op_func(op))(num1, num2);
-printf("%d\n", res);
-return (0);
