@@ -1,57 +1,32 @@
 #include "lists.h"
 
 /**
- * delete_dnodeint_at_index - Deletes the node at @index of a dlistint_t list.
- *
- * @head: a pointer to the double linked list
- *		  it means a pointer to the HEAD node.
- *
- * @index: the integer that identifies the position of the node
- *		   that will be deleted in the list.
- *
- * Return: 1 if it succeeded, -1 if it failed.
- */
-
+  * delete_dnodeint_at_index - deletes a node at a given index
+  * @head: pointer to a pointer to a head node
+  * @index: integer, index of node to delete
+  *
+  * Return: integer, 1 on success else -1
+  */
 int delete_dnodeint_at_index(dlistint_t **head, unsigned int index)
 {
-	dlistint_t *iterator;
-	dlistint_t *future;
-	dlistint_t *trash;
-	unsigned int i;
+	dlistint_t *iNode = *head, *prevNode = NULL;
 
-	if (head == NULL || *head == NULL)
+	while (iNode && index > 0)
+		prevNode = iNode, iNode = iNode->next, index--;
+
+	if (index == 0 && iNode)
 	{
-		return (-1);
-	}
-	iterator = *head;
-	if (index == 0)
-	{
-		iterator = iterator->next;
-		free(*head);
-		if (iterator)
-			iterator->prev = NULL;
-		*head = iterator;
+		if (prevNode)
+			prevNode->next = iNode->next;
+		else
+			*head = iNode->next;
+
+		if (iNode->next)
+			(iNode->next)->prev = prevNode;
+
+		free(iNode);
 		return (1);
 	}
-	for (i = 0; i < index - 1; i++)
-	{
-		if (iterator == NULL)
-			return (-1);
-		iterator = iterator->next;
-	}
-	trash = iterator;
-	if (iterator->next)
-	{
-		trash = trash->next;
-		if (iterator->next->next)
-		{
-			future = iterator->next->next;
-			single_connector(iterator, future);
-		} else
-		{
-			trash->prev->next = NULL;
-		}
-		free(trash);
-	}
-	return (1);
+
+	return (-1);
 }
