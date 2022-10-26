@@ -16,7 +16,7 @@ void hash_table_delete(hash_table_t *ht)
 
 	if (ht->array != NULL)
 	{
-		for (j = 0; j < ht->size; i++)
+		for (j = 0; j < ht->size; j++)
 		{
 		address = ht->array[j];
 

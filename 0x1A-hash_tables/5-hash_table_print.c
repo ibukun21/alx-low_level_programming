@@ -8,7 +8,7 @@
   */
 void hash_table_print(const hash_table_t *ht)
 {
-	unsigned long int i, track = 0;
+	unsigned long int j, track = 0;
 	hash_node_t *address;
 
 	if (ht == NULL || ht->array == NULL)
