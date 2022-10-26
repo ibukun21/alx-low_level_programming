@@ -10,7 +10,7 @@ shash_table_t *shash_table_create(unsigned long int size)
 {
 	shash_node_t **array;
 	shash_table_t *table;
-	unsigned long int j;
+	unsigned long int i;
 
 	table = (shash_table_t *) malloc(sizeof(shash_table_t));
 	if (table == NULL)
@@ -24,8 +24,8 @@ shash_table_t *shash_table_create(unsigned long int size)
 		return (NULL);
 	}
 
-	for (j = 0; j < size; j++)
-		array[j] = NULL;
+	for (i = 0; i < size; i++)
+		array[i] = NULL;
 
 	table->size = size;
 	table->array = array;
@@ -62,8 +62,8 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	{
 		if (strcmp(current->key, key) == 0)
 		{
-		free(current->value);
-	current->value = new_value;
+			free(current->value);
+			current->value = new_value;
 			return (1);
 		}
 		current = current->next;
@@ -110,17 +110,16 @@ void place_node(shash_table_t *ht, shash_node_t *new)
 	}
 	else
 	{
-	current = ht->shead;
-	while (current->snext &&
-    (strcmp(current->snext->key, new->key) < 0))
-		current = current->snext;
+		current = ht->shead;
+		while (current->snext &&
+				(strcmp(current->snext->key, new->key) < 0))
+			current = current->snext;
 		new->sprev = current;
-	new->snext = current->snext;
+		new->snext = current->snext;
 		if (current->snext == NULL)
 			ht->stail = new;
 		else
-	
-	current->snext->sprev = new;
+			current->snext->sprev = new;
 		current->snext = new;
 	}
 }
@@ -231,3 +230,4 @@ void shash_table_delete(shash_table_t *ht)
 		free(ht->array);
 	free(ht);
 }
+
