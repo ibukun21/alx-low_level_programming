@@ -10,7 +10,7 @@ shash_table_t *shash_table_create(unsigned long int size)
 {
 	shash_node_t **array;
 	shash_table_t *table;
-	unsigned long int i;
+	unsigned long int j;
 
 	table = (shash_table_t *) malloc(sizeof(shash_table_t));
 	if (table == NULL)
